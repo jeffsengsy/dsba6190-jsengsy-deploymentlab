@@ -69,32 +69,34 @@ resource "azurerm_storage_account" "storage" {
   tags = local.tags
 }
 
-// SQL Server
+// MSSQL Server
 
 resource "azurerm_mssql_server" "sql" {
-  name                = "sql-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  version             = "12.0"
+  name                         = "sql-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
+  resource_group_name          = azurerm_resource_group.rg.name
+  location                     = azurerm_resource_group.rg.location
+  version                      = "12.0"
+  administrator_login          = "4dm1n157r470r"
+  administrator_login_password = "4-v3ry-53cr37-p455w0rd"
 
-  administrator_login          = var.sql_admin_username
-  administrator_login_password = var.sql_admin_password
+  minimum_tls_version = "1.2"
 
   tags = local.tags
 }
 
-// Sql Database
+// MSSql Database
 
 resource "azurerm_mssql_database" "db" {
   name        = "sqldb-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
   server_id   = azurerm_mssql_server.sql.id
-  sku_name    = "Basic"
+  collation   = "SQL_Latin1_General_CP1_CI_AS"
   max_size_gb = 2
+  sku_name    = "Basic"
 
   tags = local.tags
 }
 
-// Sql Vnet Rule
+// MSSQL Vnet Rule
 
 resource "azurerm_mssql_virtual_network_rule" "sql_vnet_rule" {
   name      = "sqlvnetrule-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"

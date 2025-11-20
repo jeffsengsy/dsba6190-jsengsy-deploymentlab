@@ -46,15 +46,3 @@ variable "class_name" {
   default     = "dsba6190"
 }
 
-variable "sql_admin_username" {
-  description = "Admin username for Azure SQL Server"
-  type        = string
-  default     = "sqladminuser"
-}
-
-variable "sql_admin_password" {
-  description = "Admin password for Azure SQL Server"
-  type        = string
-  sensitive   = true
-  default     = "P@assword123!"
-}
