@@ -1,7 +1,3 @@
-provider "azurerm" {
-  features {}
-}
-
 // Tags
 locals {
   tags = {
