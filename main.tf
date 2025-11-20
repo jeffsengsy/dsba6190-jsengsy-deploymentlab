@@ -71,7 +71,7 @@ resource "azurerm_storage_account" "storage" {
 
 // SQL Server
 
-resource "azurerm_sql_server" "sql" {
+resource "azurerm_mssql_server" "sql" {
   name                = "sql-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
@@ -85,12 +85,9 @@ resource "azurerm_sql_server" "sql" {
 
 // Sql Database
 
-resource "azurerm_sql_database" "db" {
-  name                = "sqldb-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  server_name         = azurerm_sql_server.sql.name
-
+resource "azurerm_mssql_database" "db" {
+  name        = "sqldb-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
+  server_id   = azurerm_mssql_server.sql.id
   sku_name    = "Basic"
   max_size_gb = 2
 
@@ -99,13 +96,11 @@ resource "azurerm_sql_database" "db" {
 
 // Sql Vnet Rule
 
-resource "azurerm_sql_virtual_network_rule" "sql_vnet_rule" {
-  name                = "sqlvnetrule-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
-  resource_group_name = azurerm_resource_group.rg.name
-  server_name         = azurerm_sql_server.sql.name
-  subnet_id           = azurerm_subnet.subnet.id
+resource "azurerm_mssql_virtual_network_rule" "sql_vnet_rule" {
+  name      = "sqlvnetrule-${var.class_name}-${var.student_name}-${var.environment}-${random_integer.deployment_id_suffix.result}"
+  server_id = azurerm_mssql_server.sql.id
+  subnet_id = azurerm_subnet.subnet.id
 
-  # Ensures the subnet’s service endpoint exists before the rule
   depends_on = [
     azurerm_subnet.subnet
   ]
