@@ -56,4 +56,5 @@ variable "sql_admin_password" {
   description = "Admin password for Azure SQL Server"
   type        = string
   sensitive   = true
+  default     = "P@assword123!"
 }
